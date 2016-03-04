@@ -1,7 +1,7 @@
 import axios from 'axios';
-
+import rachioToken from './token';
 const apiRoot = "https://api.rach.io/1/public/";
-const rachioToken = "[hard coded for now]";
+
 const config = {
   headers:
   {
