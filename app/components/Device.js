@@ -1,5 +1,6 @@
 import React from 'react';
 import apis from '../utils/apis';
+import Zone from './Zone';
 import Spinner from './Spinner';
 
 class Device extends React.Component {
@@ -43,6 +44,7 @@ class Device extends React.Component {
     })
   }
 
+
   initializeZoneList()
   {
     var zoneList = this.state.device.zones.map( zone =>{
@@ -62,7 +64,6 @@ class Device extends React.Component {
     });
   }
 
-
   render()
   {
     if(this.state.loaded)
@@ -79,7 +80,7 @@ class Device extends React.Component {
               {
                 this.state.device.zones.map( zone => {
                   return (
-                    <li key={zone.id}><strong>Name:</strong> {zone.name} <strong>ID:</strong> {zone.id} </li>
+                    <Zone key={zone.id} zoneID={zone.id} />
                   );
                 })
               }

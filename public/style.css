@@ -91,6 +91,13 @@ a {
   font-size: 1rem;
 }
 
+.zone
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .zone:last-child
 {
   border: none;
@@ -102,4 +109,41 @@ a {
   text-align: center;
   font-size: 1.5rem;
   border-radius: 5px 5px 0 0;
+}
+
+.zoneBox
+{
+  align-self: center;
+}
+
+.zoneSelect
+{
+  appearance: none;
+  border: 1px solid #000;
+  font-size: 1rem;
+  color: #fff;
+  background: #444;
+  margin-right: .25rem;
+  height: 2.21rem;
+}
+
+input[type="checkbox"] {
+  transform:scale(2, 2);
+  margin-right: 1rem;
+}
+
+.waterbutton
+{
+  font-size: 1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  background-color: #03a9f4;
+  color:white;
+  transition: all .5s;
+}
+
+.waterbutton:hover
+{
+  background-color: lightblue;
+  color:#03a9f4;
 }
