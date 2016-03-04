@@ -1,5 +1,6 @@
 import React from 'react';
 import apis from '../utils/apis';
+import Loading from './Loading';
 
 class RachioAPI extends React.Component {
   constructor() {
@@ -38,7 +39,7 @@ class RachioAPI extends React.Component {
     }
     else
     {
-      return <h1>Loading <i className="fa fa-spinner fa-spin"></i></h1>;
+      return <Loading text="Loading..." />;
     }
   }
 }
