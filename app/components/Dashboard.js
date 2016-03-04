@@ -1,5 +1,6 @@
 import React from 'react';
 import apis from '../utils/apis';
+import Device from './Device';
 import Loading from './Loading';
 
 class Dashboard extends React.Component {
@@ -41,7 +42,7 @@ class Dashboard extends React.Component {
           <h2>Devices</h2>
           {
             this.state.person.devices.map( device => {
-              return <h3>{device.name} (model {device.model})</h3>;
+              return <Device key={device.id} deviceID={device.id} />;
             })
           }
         </div>
