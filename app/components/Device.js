@@ -15,6 +15,7 @@ class Device extends React.Component {
     };
     this.update=this.update.bind(this);
     this.initializeZoneList = this.initializeZoneList.bind(this);
+    this.waterZones = this.waterZones.bind(this);
   }
 
   componentWillMount() {
@@ -64,6 +65,16 @@ class Device extends React.Component {
     });
   }
 
+  waterZones(e)
+  {
+    e.preventDefault();
+    apis.zoneStartMultiple(this.state.zoneList)
+      .then (
+        res => {
+          console.log(res);
+        })
+  }
+
   render()
   {
     if(this.state.loaded)
@@ -75,7 +86,7 @@ class Device extends React.Component {
             <ul className="zoneList">
               <li className="zoneListTitle">
                 Zones <br />
-
+                <a className="waterbutton" onClick={this.waterZones}>Water All Zones</a>
               </li>
               {
                 this.state.device.zones.map( zone => {
