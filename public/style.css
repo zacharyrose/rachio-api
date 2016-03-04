@@ -1,0 +1,105 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+html
+{
+  font-size: 16px;
+}
+
+body
+{
+  font-family: 'Roboto',Helvetica,sans-serif;
+  background-color: white;
+}
+
+a {
+  cursor: pointer;
+}
+
+.loading
+{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #03a9f4;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading h1
+{
+  font-size: 5rem;
+  padding-top: 10rem;
+  width: 100%;
+  height: 100%;
+  font-size: 3rem;
+  color: white;
+  text-align: center;
+}
+
+.dashboard
+{
+  width:60%;
+  margin:auto;
+}
+
+.dashboard h1
+{
+  font-size: 2rem;
+  text-align: center;
+  margin: 1rem;
+}
+
+.dashboard h2
+{
+  font-size: 1.5rem;
+  border-bottom: 2px solid #ccc;
+  width: 100%;
+  margin: 0;
+}
+
+.dashboard h3
+{
+  font-size: 1.2rem;
+  margin: .25rem;
+}
+
+.zoneContainer
+{
+  background-color: #eee;
+  border-radius: 8px;
+  box-shadow: 1px 1px 3px #888;
+}
+
+.zoneList
+{
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.zone, .zoneListTitle
+{
+  border-bottom: 3px solid #ddd;
+  padding: 1rem;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
+.zone:last-child
+{
+  border: none;
+}
+
+.zoneListTitle
+{
+  background-color: #ccc;
+  text-align: center;
+  font-size: 1.5rem;
+  border-radius: 5px 5px 0 0;
+}
