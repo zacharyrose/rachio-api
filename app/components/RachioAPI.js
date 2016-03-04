@@ -1,5 +1,6 @@
 import React from 'react';
 import apis from '../utils/apis';
+import Dashboard from './Dashboard';
 import Loading from './Loading';
 
 class RachioAPI extends React.Component {
@@ -35,7 +36,7 @@ class RachioAPI extends React.Component {
   {
     if (this.state.loaded)
     {
-      return <h1>personID: {this.state.personID}</h1>;
+      return <Dashboard personID={this.state.personID} />;
     }
     else
     {
