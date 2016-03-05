@@ -30,7 +30,7 @@ class Device extends React.Component {
         name: zone.name,
         zoneNumber: zone.zoneNumber,
         checked: false,
-        duration: 60
+        duration: 0
         })
       }).sort( (a,b) => {
         return a.zoneNumber - b.zoneNumber;
@@ -38,20 +38,24 @@ class Device extends React.Component {
 
     console.log("zoneList: ", zoneList);
 
-    this.setState({zoneList}, () => {
-
-    });
+    this.setState({zoneList});
   }
 
   setZoneDuration(zoneID, duration)
   {
+    /*
+    While it would be simpler to pass the zone object
+    and simply change its member variable directly,
+    we must change the state this way, because
+    React states are immutable.
+    */
     var zoneListNew = this.state.zoneList;
-    for (var i; i<zoneListNew.length; i++)
+    for (var i=0; i<zoneListNew.length; i++)
     {
       if (zoneListNew[i].id === zoneID)
         {
           zoneListNew[i].duration = duration;
-          this.setState({zoneList: zoneListNew});
+          this.setState({zoneList: zoneListNew}, () =>{console.log ("new duration", this.state.zoneList)});
           break;
         }
     }
@@ -60,20 +64,32 @@ class Device extends React.Component {
 
   toggleZone(zoneID)
   {
-    for (var i; i<this.state.zoneList.length; i++)
+    //Must change state this way to to reasons stated in setZoneDuration()
+    var zoneListNew = this.state.zoneList;
+    for (var i=0; i<zoneListNew.length; i++)
     {
       if (zoneListNew[i].id === zoneID)
         {
-          this.setState({checked: !this.state.zoneList.checked});
+          zoneListNew[i].checked = !zoneListNew[i].checked;
+          this.setState({zoneList: zoneListNew}, () => {console.log ("toggle", this.state.zoneList)} );
           break;
         }
     }
+
   }
 
   waterZones(e)
   {
     e.preventDefault();
-    apis.zoneStartMultiple(this.state.zoneList)
+
+    var zonesToWater = this.state.zoneList.filter(
+      zone => {
+        return zone.checked;
+    });
+
+    console.log("zonesToWater", zonesToWater);
+
+    apis.zoneStartMultiple(zonesToWater)
       .then (
         res => {
           console.log(res);
@@ -109,12 +125,12 @@ class Device extends React.Component {
           <ul className="zoneList">
             <li className="zoneListTitle">
               Zones <br />
-              <a className="waterbutton" onClick={this.waterZones}>Water All Zones</a>
+              <a className="waterbutton" onClick={this.waterZones}>Water Selected Zones</a>
             </li>
             {
               this.state.zoneList.map( zone => {
                 return (
-                  <Zone key={zone.id} zone={zone} />
+                  <Zone key={zone.id} zone={zone} toggleCallback={this.toggleZone} durationCallback={this.setZoneDuration} />
                 );
               })
             }

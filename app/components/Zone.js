@@ -6,10 +6,10 @@ class Zone extends React.Component {
   constructor() {
     super();
     this.state = {
-      duration:0,
-      checked:false
     };
     this.waterZone = this.waterZone.bind(this);
+    this.setDuration = this.setDuration.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   componentWillMount() {
@@ -19,11 +19,21 @@ class Zone extends React.Component {
   waterZone(e)
   {
     e.preventDefault();
-    apis.zoneStart(this.props.zone.id, 60)
+    apis.zoneStart(this.props.zone.id, this.props.zone.duration) //duration set in parent by callback
       .then(
         res => {
           console.log(res);
         })
+  }
+
+  setDuration(e)
+  {
+    this.props.durationCallback(this.props.zone.id, e.target.value);
+  }
+
+  toggle(e)
+  {
+    this.props.toggleCallback(this.props.zone.id);
   }
 
   render()
@@ -31,11 +41,11 @@ class Zone extends React.Component {
     return (
       <li className="zone">
         <div className="zoneBox">
-          <input type="checkbox" />
+          <input type="checkbox" onChange={this.toggle} />
           {this.props.zone.name}
         </div>
         <div className="zoneBox">
-          <select className="zoneSelect">
+          <select onChange={this.setDuration} className="zoneSelect">
             <option value="0">0 min</option>
             <option value="60">1 min</option>
             <option value="120">2 min</option>
