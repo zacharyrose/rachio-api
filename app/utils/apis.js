@@ -20,6 +20,15 @@ const apis = {
   device: deviceID => {
     return axios.get(apiRoot + "device/" + deviceID, config);
   },
+  deviceOn: id => {
+    return axios.put(apiRoot + "device/on/", {id}, config);
+  },
+  deviceOff: id => {
+    return axios.put(apiRoot + "device/off/", {id}, config);
+  },
+  deviceStopWater: id => {
+    return axios.put(apiRoot + "put/public/device/stop_water", {id}, config);
+  },
   zone: zoneID => {
     return axios.get(apiRoot + "zone/" + zoneID, config);
   },
