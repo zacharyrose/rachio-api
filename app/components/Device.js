@@ -32,13 +32,14 @@ class Device extends React.Component {
         checked: false,
         duration: 60
         })
+      }).sort( (a,b) => {
+        return a.zoneNumber - b.zoneNumber;
       });
 
     console.log("zoneList: ", zoneList);
 
     this.setState({zoneList}, () => {
-      this.setState({zoneListInitalized:true});
-      this.setState({loaded:true});
+
     });
   }
 
@@ -112,7 +113,7 @@ class Device extends React.Component {
               <a className="waterbutton" onClick={this.waterZones}>Water All Zones</a>
             </li>
             {
-              this.props.device.zones.map( zone => {
+              this.state.zoneList.map( zone => {
                 return (
                   <Zone key={zone.id} zone={zone} />
                 );
