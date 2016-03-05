@@ -106,11 +106,10 @@ class Device extends React.Component {
       apis.deviceOn(this.props.deviceID)
       .then( () => { this.update(); });
     }
-    else {
+    else if (this.props.device.status === "ONLINE") {
       apis.deviceOff(this.props.deviceID)
       .then( () => { this.update(); });
     }
-
   }
 
   render()
