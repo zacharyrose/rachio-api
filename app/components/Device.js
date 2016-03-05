@@ -14,8 +14,10 @@ class Device extends React.Component {
       loaded:false
     };
     this.update=this.update.bind(this);
-    this.initializeZoneList = this.initializeZoneList.bind(this);
     this.waterZones = this.waterZones.bind(this);
+    this.initializeZoneList = this.initializeZoneList.bind(this);
+    this.setZoneDuration = this.setZoneDuration.bind(this);
+    this.toggleZone = this.toggleZone.bind(this);
   }
 
   componentWillMount() {
@@ -53,6 +55,7 @@ class Device extends React.Component {
         id: zone.id,
         name: zone.name,
         zoneNumber: zone.zoneNumber,
+        checked: false,
         duration: 60
         })
       });
@@ -63,6 +66,33 @@ class Device extends React.Component {
       this.setState({zoneListInitalized:true});
       this.setState({loaded:true});
     });
+  }
+
+  setZoneDuration(zoneID, duration)
+  {
+    var zoneListNew = this.state.zoneList;
+    for (var i; i<zoneListNew.length; i++)
+    {
+      if (zoneListNew[i].id === zoneID)
+        {
+          zoneListNew[i].duration = duration;
+          this.setState({zoneList: zoneListNew});
+          break;
+        }
+    }
+
+  }
+
+  toggleZone(zoneID)
+  {
+    for (var i; i<this.state.zoneList.length; i++)
+    {
+      if (zoneListNew[i].id === zoneID)
+        {
+          this.setState({checked: !this.state.zoneList.checked});
+          break;
+        }
+    }
   }
 
   waterZones(e)
