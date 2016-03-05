@@ -18,6 +18,7 @@ class Device extends React.Component {
     this.initializeZoneList = this.initializeZoneList.bind(this);
     this.setZoneDuration = this.setZoneDuration.bind(this);
     this.toggleZone = this.toggleZone.bind(this);
+    this.deviceToggle = this.deviceToggle.bind(this);
   }
 
   componentWillMount() {
@@ -105,6 +106,23 @@ class Device extends React.Component {
         })
   }
 
+  deviceToggle(e)
+  {
+    e.preventDefault();
+    this.setState({loaded:false}, () => {});
+
+    if (this.state.device.status === "OFFLINE")
+    {
+      apis.deviceOn(this.props.deviceID)
+      .then( () => { this.update(); });
+    }
+    else {
+      apis.deviceOff(this.props.deviceID)
+      .then( () => { this.update(); });
+    }
+
+  }
+
   render()
   {
     if(this.state.loaded)
@@ -112,6 +130,10 @@ class Device extends React.Component {
       return (
         <div>
           <h3>{this.state.device.name} (model {this.state.device.model})</h3>
+          <h3>
+            Status: <strong>{this.state.device.status}</strong>
+            <a className="waterbutton" onClick={this.deviceToggle}>On/Off</a>
+          </h3>
           <div className="zoneContainer">
             <ul className="zoneList">
               <li className="zoneListTitle">
