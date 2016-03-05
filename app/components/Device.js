@@ -104,7 +104,6 @@ class Device extends React.Component {
         <h3>{this.props.device.name} (model {this.props.device.model})</h3>
         <h3>
           Status: <strong>{this.props.device.status}</strong>
-          <a className="waterbutton" onClick={this.deviceToggle}>On/Off</a>
         </h3>
         <div className="zoneContainer">
           <ul className="zoneList">
