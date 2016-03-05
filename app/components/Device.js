@@ -8,12 +8,8 @@ class Device extends React.Component {
   constructor() {
     super();
     this.state = {
-      device: {},
-      zoneList:{},
-      zoneListInitalized:false,
-      loaded:false
+      zoneList:{}
     };
-    this.update=this.update.bind(this);
     this.waterZones = this.waterZones.bind(this);
     this.initializeZoneList = this.initializeZoneList.bind(this);
     this.setZoneDuration = this.setZoneDuration.bind(this);
@@ -21,37 +17,14 @@ class Device extends React.Component {
     this.deviceToggle = this.deviceToggle.bind(this);
   }
 
-  componentWillMount() {
-    this.update();
-  }
-
-  update()
+  componentWillMount ()
   {
-    this.setState({loaded: false}, () =>
-    {
-      apis.device(this.props.deviceID)
-      .then (
-        res => {
-          this.setState({device: res.data}, () => {
-            console.log("Device:", this.state.device.name, this.state.device);
-            if (this.state.zoneListInitalized)
-            {
-              this.setState({loaded:true});
-            }
-            else
-            {
-              this.initializeZoneList();
-            }
-
-          });
-        })
-    })
+    this.initializeZoneList();
   }
-
 
   initializeZoneList()
   {
-    var zoneList = this.state.device.zones.map( zone =>{
+    var zoneList = this.props.device.zones.map( zone =>{
       return ({
         id: zone.id,
         name: zone.name,
@@ -111,7 +84,7 @@ class Device extends React.Component {
     e.preventDefault();
     this.setState({loaded:false}, () => {});
 
-    if (this.state.device.status === "OFFLINE")
+    if (this.props.device.status === "OFFLINE")
     {
       apis.deviceOn(this.props.deviceID)
       .then( () => { this.update(); });
@@ -125,37 +98,30 @@ class Device extends React.Component {
 
   render()
   {
-    if(this.state.loaded)
-    {
-      return (
-        <div>
-          <h3>{this.state.device.name} (model {this.state.device.model})</h3>
-          <h3>
-            Status: <strong>{this.state.device.status}</strong>
-            <a className="waterbutton" onClick={this.deviceToggle}>On/Off</a>
-          </h3>
-          <div className="zoneContainer">
-            <ul className="zoneList">
-              <li className="zoneListTitle">
-                Zones <br />
-                <a className="waterbutton" onClick={this.waterZones}>Water All Zones</a>
-              </li>
-              {
-                this.state.device.zones.map( zone => {
-                  return (
-                    <Zone key={zone.id} zoneID={zone.id} />
-                  );
-                })
-              }
-            </ul>
-          </div>
+    return (
+      <div>
+        <h3>{this.props.device.name} (model {this.props.device.model})</h3>
+        <h3>
+          Status: <strong>{this.props.device.status}</strong>
+          <a className="waterbutton" onClick={this.deviceToggle}>On/Off</a>
+        </h3>
+        <div className="zoneContainer">
+          <ul className="zoneList">
+            <li className="zoneListTitle">
+              Zones <br />
+              <a className="waterbutton" onClick={this.waterZones}>Water All Zones</a>
+            </li>
+            {
+              this.props.device.zones.map( zone => {
+                return (
+                  <Zone key={zone.id} zone={zone} />
+                );
+              })
+            }
+          </ul>
         </div>
-      )
-    }
-    else
-    {
-      return <h4><Spinner /></h4>
-    }
+      </div>
+    )
   }
 
 }

@@ -42,7 +42,7 @@ class Dashboard extends React.Component {
           <h2>Devices</h2>
           {
             this.state.person.devices.map( device => {
-              return <Device key={device.id} deviceID={device.id} />;
+              return <Device key={device.id} device={device} />;
             })
           }
         </div>

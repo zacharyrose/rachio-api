@@ -6,36 +6,20 @@ class Zone extends React.Component {
   constructor() {
     super();
     this.state = {
-      zone: {}//,
-      //loaded:false
+      duration:0,
+      checked:false
     };
-    this.update=this.update.bind(this);
     this.waterZone = this.waterZone.bind(this);
   }
 
   componentWillMount() {
-    this.update();
-  }
 
-  update()
-  {
-    this.setState({loaded: false}, () =>
-    {
-      apis.zone(this.props.zoneID)
-      .then (
-        res => {
-          this.setState({zone: res.data}, () => {
-            console.log("Zone:",this.state.zone.name, this.state.zone);
-            //this.setState({loaded:true});
-          });
-        })
-    })
   }
 
   waterZone(e)
   {
     e.preventDefault();
-    apis.zoneStart(this.state.zone.id, 60)
+    apis.zoneStart(this.props.zone.id, 60)
       .then(
         res => {
           console.log(res);
@@ -48,7 +32,7 @@ class Zone extends React.Component {
       <li className="zone">
         <div className="zoneBox">
           <input type="checkbox" />
-          {this.state.zone.name}
+          {this.props.zone.name}
         </div>
         <div className="zoneBox">
           <select className="zoneSelect">
