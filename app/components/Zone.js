@@ -6,6 +6,7 @@ class Zone extends React.Component {
   constructor() {
     super();
     this.state = {
+      loading:false
     };
     this.waterZone = this.waterZone.bind(this);
     this.setDuration = this.setDuration.bind(this);
@@ -19,10 +20,17 @@ class Zone extends React.Component {
   waterZone(e)
   {
     e.preventDefault();
+    this.setState({loading: true});
     apis.zoneStart(this.props.zone.id, this.props.zone.duration) //duration set in parent by callback
       .then(
         res => {
+          this.setState({loading: false});
           console.log(res);
+        },
+        error => {
+          this.setState({loading: false});
+          console.log(error);
+          alert("Error: "+ error.statusText);
         })
   }
 
@@ -44,6 +52,14 @@ class Zone extends React.Component {
           <input type="checkbox" onChange={this.toggle} />
           {this.props.zone.name}
         </div>
+
+        {(() => {
+          if(this.state.loading)
+          {
+            return <div className="zoneBox"><h3>Loading...<Spinner /></h3></div>;
+          }
+        })()}
+
         <div className="zoneBox">
           <select onChange={this.setDuration} className="zoneSelect">
             <option value="0">0 min</option>

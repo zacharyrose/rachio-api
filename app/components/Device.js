@@ -8,7 +8,8 @@ class Device extends React.Component {
   constructor() {
     super();
     this.state = {
-      zoneList:{}
+      zoneList:{},
+      loading: false
     };
     this.waterZones = this.waterZones.bind(this);
     this.initializeZoneList = this.initializeZoneList.bind(this);
@@ -89,11 +90,24 @@ class Device extends React.Component {
 
     console.log("zonesToWater", zonesToWater);
 
-    apis.zoneStartMultiple(zonesToWater)
-      .then (
-        res => {
-          console.log(res);
-        })
+    if (zonesToWater.length === 0)
+    {
+      alert("No Zones Selected!");
+    }
+    else {
+      this.setState({loading: true});
+      apis.zoneStartMultiple(zonesToWater)
+        .then (
+          res => {
+            this.setState({loading: false});
+            console.log(res);
+          },
+          error => {
+            this.setState({loading: false});
+            console.log(error);
+            alert("Error: "+ error.statusText);
+          })
+      }
   }
 
   deviceToggle(e)
@@ -125,6 +139,12 @@ class Device extends React.Component {
             <li className="zoneListTitle">
               Zones <br />
               <a className="waterbutton" onClick={this.waterZones}>Water Selected Zones</a>
+              {(() => {
+                if(this.state.loading)
+                {
+                  return <h3>Loading...<Spinner /></h3>;
+                }
+              })()}
             </li>
             {
               this.state.zoneList.map( zone => {
