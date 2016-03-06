@@ -49,8 +49,10 @@ class Zone extends React.Component {
     return (
       <li className="zone">
         <div className="zoneBox">
-          <input type="checkbox" onChange={this.toggle} />
-          {this.props.zone.name}
+          <h3>
+            <input type="checkbox" onChange={this.toggle} />
+            {this.props.zone.name}
+          </h3>
         </div>
 
         {(() => {
