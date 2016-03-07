@@ -9,6 +9,9 @@ class Device extends React.Component {
     super();
     this.state = {
       zoneList:{},
+      wateringZones:false,
+      zonesToWater:{},
+      zoneWatering:0,
       loading: false
     };
     this.waterZones = this.waterZones.bind(this);
@@ -18,6 +21,8 @@ class Device extends React.Component {
     this.reverseList = this.reverseList.bind(this);
     this.moveZone = this.moveZone.bind(this);
     this.waterZone = this.waterZone.bind(this);
+    this.waterNextZone = this.waterNextZone.bind(this);
+    this.getZoneIndex = this.getZoneIndex.bind(this);
   }
 
   componentWillMount ()
@@ -34,7 +39,7 @@ class Device extends React.Component {
         zoneNumber: zone.zoneNumber,
         checked: false,
         watering:false,
-        duration: 60
+        duration: 5
         })
       }).sort( (a,b) => {
         return a.zoneNumber - b.zoneNumber;
@@ -59,11 +64,42 @@ class Device extends React.Component {
     this.setState({zoneList: newList}, () => {console.log ("toggle", this.state.zoneList)} );
   }
 
-  waterZone(index, value)
+  waterZone(index, action)
   {
     var newList = this.state.zoneList.slice();
-    newList[index].watering = value;
-    this.setState({zoneList:newList});
+
+    if (action === "START")
+    {
+      newList[index].watering = true;
+      this.setState({zoneList:newList});
+    }
+    else if (action === "STOP")
+    {
+      newList[index].watering = false;
+      this.setState({zoneList:newList});
+
+      if (this.state.wateringZones)
+      {
+        this.setState({zoneWatering: this.state.zoneWatering++}, ()=> {
+          this.waterNextZone()
+        });
+      }
+
+    }
+
+  }
+
+  waterNextZone()
+  {
+    var index = this.getZoneIndex(this.state.zonesToWater[ this.state.zoneWatering ].id);
+    this.waterZone(index, "START" );
+  }
+
+  getZoneIndex(id)
+  {
+    return this.state.zoneList.map( zone => {
+      return zone.id;
+    }).indexOf(id);
   }
 
   waterZones(e)
@@ -75,26 +111,30 @@ class Device extends React.Component {
         return zone.checked;
     });
 
-    console.log("zonesToWater", zonesToWater);
+    this.setState({zonesToWater, wateringZones:true, zoneWatering:0}, ()=>{
 
-    if (zonesToWater.length === 0)
-    {
-      alert("No Zones Selected.");
-    }
-    else {
-      this.setState({loading: true});
-      apis.zoneStartMultiple(zonesToWater)
-        .then (
-          res => {
-            this.setState({loading: false});
-            console.log(res);
-          },
-          error => {
-            this.setState({loading: false});
-            console.log(error);
-            alert("Error: "+ error.statusText);
-          })
+      console.log("zonesToWater", this.state.zonesToWater);
+
+      if (zonesToWater.length === 0)
+      {
+        alert("No Zones Selected.");
       }
+      else {
+        this.setState({loading: true});
+        apis.zoneStartMultiple(this.state.zonesToWater)
+          .then (
+            res => {
+              this.setState({loading: false});
+              console.log(res);
+              this.waterNextZone();
+            },
+            error => {
+              this.setState({loading: false});
+              console.log(error);
+              alert("Error: "+ error.statusText);
+            })
+        }
+    });
   }
 
   reverseList()

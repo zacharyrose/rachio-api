@@ -37,6 +37,14 @@ class Zone extends React.Component {
     this.moveDown = this.moveDown.bind(this);
   }
 
+  componentWillReceiveProps(newProps) {
+    console.log("newProps");
+    if (newProps.zone.watering)
+    {
+      this.startWatering();
+    }
+  }
+
   tick() {
     this.setState({time: this.state.time + 1});
     if (this.state.time > this.props.zone.duration) {
@@ -45,14 +53,14 @@ class Zone extends React.Component {
   }
 
   startWatering() {
-    this.props.waterCallback(this.props.zoneIndex, true);
+    this.props.waterCallback(this.props.zoneIndex, "START");
     this.interval = setInterval(this.tick, 1000);
     this.setState({time: 0});
   }
 
   stopWatering()
   {
-    this.props.waterCallback(this.props.zoneIndex, false);
+    this.props.waterCallback(this.props.zoneIndex, "STOP");
     clearInterval(this.interval);
   }
 
