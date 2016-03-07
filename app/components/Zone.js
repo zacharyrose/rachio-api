@@ -18,10 +18,10 @@ const timeToMinutes = time =>
   return minutes + ":" + (seconds  < 10 ? "0" + seconds : seconds);
 }
 
-/**
-This component represents a single zone.  zone/start apis are handled here,
-but
-**/
+/*************************************************************************************************
+This component represents a single zone.  zone/start and device/stop_water apis are handled here,
+but most states concerning watering visualization are handled in parent Device component
+*************************************************************************************************/
 class Zone extends React.Component {
   constructor() {
     super();
