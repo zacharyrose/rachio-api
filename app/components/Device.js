@@ -33,7 +33,7 @@ class Device extends React.Component {
         name: zone.name,
         zoneNumber: zone.zoneNumber,
         checked: false,
-        duration: 0
+        duration: 60
         })
       }).sort( (a,b) => {
         return a.zoneNumber - b.zoneNumber;

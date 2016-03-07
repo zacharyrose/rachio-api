@@ -142,7 +142,6 @@ class Zone extends React.Component {
         <div className="zoneBox zoneBoxRight">
           <div className="zoneBox">
             <select onChange={this.setDuration} className="zoneSelect">
-              <option value="0">0 min</option>
               <option value="60">1 min</option>
               <option value="120">2 min</option>
               <option value="180">3 min</option>
