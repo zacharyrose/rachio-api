@@ -106,10 +106,9 @@ class Device extends React.Component {
   {
     if (typeof this.state.zoneList[index + direction] != 'undefined')
     {
-      var newList = this.state.zoneList;
-      var newZone = this.state.zoneList[index + direction];
+      var newList = this.state.zoneList.slice();
       newList[index + direction] = this.state.zoneList[index];
-      newList[index] = newZone;
+      newList[index] = this.state.zoneList[index+direction];
 
       this.setState({zoneList:newList});
     }
