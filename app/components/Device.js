@@ -11,18 +11,20 @@ class Device extends React.Component {
       zoneList:{},
       wateringZones:false,
       zonesToWater:{},
-      zoneWatering:0,
+      zonesToWaterIndex:0,
       loading: false
     };
     this.waterZones = this.waterZones.bind(this);
     this.initializeZoneList = this.initializeZoneList.bind(this);
     this.setZoneDuration = this.setZoneDuration.bind(this);
     this.toggleZone = this.toggleZone.bind(this);
+    this.setZoneLoading = this.setZoneLoading.bind(this);
     this.reverseList = this.reverseList.bind(this);
     this.moveZone = this.moveZone.bind(this);
     this.waterZone = this.waterZone.bind(this);
     this.waterNextZone = this.waterNextZone.bind(this);
     this.getZoneIndex = this.getZoneIndex.bind(this);
+    this.zonesCurrentlyWatering = this.zonesCurrentlyWatering.bind(this);
   }
 
   componentWillMount ()
@@ -38,6 +40,7 @@ class Device extends React.Component {
         name: zone.name,
         zoneNumber: zone.zoneNumber,
         checked: false,
+        loading: false,
         watering:false,
         duration: 5
         })
@@ -64,25 +67,38 @@ class Device extends React.Component {
     this.setState({zoneList: newList}, () => {console.log ("toggle", this.state.zoneList)} );
   }
 
+  setZoneLoading(index, value)
+  {
+    var newList = this.state.zoneList.slice();
+    newList[index].loading = value;
+    this.setState({zoneList: newList}, () => {} );
+  }
+
   waterZone(index, action)
   {
-
     var newList = this.state.zoneList.slice();
 
     if (action === "START")
     {
-      newList[index].watering = true;
-      this.setState({zoneList:newList});
+      if (this.zonesCurrentlyWatering() > 0)
+      {
+        alert("Please wait for other zones to finish");
+      }
+      else
+      {
+        newList[index].watering = true;
+        this.setState({zoneList:newList});
+      }
     }
     else if (action === "STOP" || action === "STOP_ALL")
     {
       newList[index].watering = false;
       this.setState({zoneList:newList});
 
-      if (this.state.wateringZones && action != "STOP_ALL" && this.state.zoneWatering < this.state.zonesToWater.length)
+      if (this.state.wateringZones && action != "STOP_ALL" && this.state.zonesToWaterIndex < this.state.zonesToWater.length)
       {
-        this.setState({zoneWatering: this.state.zoneWatering+1}, ()=> {
-          this.waterNextZone()
+        this.setState({zonesToWaterIndex: this.state.zonesToWaterIndex+1}, ()=> {
+          this.waterNextZone();
         });
       }
     }
@@ -91,13 +107,12 @@ class Device extends React.Component {
 
   waterNextZone()
   {
-    if (this.state.zoneWatering < this.state.zonesToWater.length)
+    if (this.state.zonesToWaterIndex < this.state.zonesToWater.length)
     {
-      var nextID = this.state.zonesToWater[ this.state.zoneWatering ].id;
+      var nextID = this.state.zonesToWater[ this.state.zonesToWaterIndex ].id;
       var index = this.getZoneIndex(nextID);
       this.waterZone(index, "START" );
     }
-
   }
 
   getZoneIndex(id)
@@ -107,39 +122,53 @@ class Device extends React.Component {
     }).indexOf(id);
   }
 
+  zonesCurrentlyWatering()
+  {
+    var waterCheck = this.state.zoneList.filter( zone => {
+      return zone.watering || zone.loading;
+    });
+    return waterCheck.length;
+  }
+
   waterZones(e)
   {
     e.preventDefault();
 
-    var zonesToWater = this.state.zoneList.filter(
-      zone => {
-        return zone.checked;
-    });
+    if (this.zonesCurrentlyWatering() > 0)
+    {
+      alert("Please wait for other zones to finish");
+    }
+    else {
+      var zonesToWater = this.state.zoneList.filter(
+        zone => {
+          return zone.checked;
+      });
 
-    this.setState({zonesToWater, wateringZones:true, zoneWatering:0}, ()=>{
+      this.setState({zonesToWater, wateringZones:true, zonesToWaterIndex:0}, ()=>{
 
-      console.log("zonesToWater", this.state.zonesToWater);
+        console.log("zonesToWater", this.state.zonesToWater);
 
-      if (zonesToWater.length === 0)
-      {
-        alert("No Zones Selected.");
-      }
-      else {
-        this.setState({loading: true});
-        apis.zoneStartMultiple(this.state.zonesToWater)
-          .then (
-            res => {
-              this.setState({loading: false});
-              console.log(res);
-              this.waterNextZone();
-            },
-            error => {
-              this.setState({loading: false});
-              console.log(error);
-              alert("Error: "+ error.statusText);
-            })
+        if (zonesToWater.length === 0)
+        {
+          alert("No Zones Selected.");
         }
-    });
+        else {
+          this.setState({loading: true});
+          apis.zoneStartMultiple(this.state.zonesToWater)
+            .then (
+              res => {
+                this.setState({loading: false});
+                console.log(res);
+                this.waterNextZone();
+              },
+              error => {
+                this.setState({loading: false});
+                console.log(error);
+                alert("Error: "+ error.statusText);
+              })
+          }
+      });
+    }
   }
 
   reverseList()
@@ -196,7 +225,9 @@ class Device extends React.Component {
                         zone={zone}
                         zoneIndex={index}
                         deviceID={this.props.device.id}
+                        zonesCurrentlyWatering={this.zonesCurrentlyWatering}
                         waterCallback={this.waterZone}
+                        loadingCallback={this.setZoneLoading}
                         moveCallback={this.moveZone}
                         toggleCallback={this.toggleZone}
                         durationCallback={this.setZoneDuration} />

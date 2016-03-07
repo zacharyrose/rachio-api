@@ -22,8 +22,7 @@ class Zone extends React.Component {
     this.state = {
       time: 0,
       stopping: false,
-      watering: false,
-      loading:false
+      watering: false
     };
     this.waterZone = this.waterZone.bind(this);
     this.setDuration = this.setDuration.bind(this);
@@ -97,21 +96,30 @@ class Zone extends React.Component {
     {
       alert("Please set duration");
     }
+    else if (this.props.zone.watering || this.props.zone.loading)
+    {
+      alert("Zone Already watering");
+    }
     else {
-      this.setState({loading: true});
-      console.log("Making zoneStart request...", this.props.zone.id, this.props.zone.duration);
+      if (this.props.zonesCurrentlyWatering() > 0)
+      {
+        alert("Please wait for other zones to finish");
+      }
+      else {
+      this.props.loadingCallback(this.props.zoneIndex,true);
       apis.zoneStart(this.props.zone.id, this.props.zone.duration) //duration set in parent by callback
         .then(
           res => {
-            this.setState({loading: false});
+            this.props.loadingCallback(this.props.zoneIndex,false);
             this.props.waterCallback(this.props.zoneIndex, "START");
             console.log(res);
           },
           error => {
-            this.setState({loading: false});
+            this.props.loadingCallback(this.props.zoneIndex,false);
             console.log(error);
             alert("Error: "+ error.statusText);
           })
+        }
     }
   }
 
@@ -147,7 +155,7 @@ class Zone extends React.Component {
         </div>
 
         {(() => {
-          if(this.state.loading)
+          if(this.props.zone.loading)
           {
             return <div className="zoneBox"><p>Loading...<Spinner /></p></div>;
           }
