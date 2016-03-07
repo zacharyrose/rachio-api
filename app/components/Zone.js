@@ -209,7 +209,7 @@ class Zone extends React.Component {
               <option value="30">30 sec</option>
             </select>
             {(() => {
-              if (this.props.zone.watering || this.props.zone.loading || this.props.zonesCurrentlyWatering() > 0)
+              if (this.props.zone.watering || this.props.zone.loading || this.props.zonesCurrentlyWatering() > 0 || this.props.parentLoading)
               {
                 return <a></a>;
               }
