@@ -112,7 +112,7 @@ class Zone extends React.Component {
         {(() => {
           if(this.state.loading)
           {
-            return <div className="zoneBox"><h3>Loading...<Spinner /></h3></div>;
+            return <div className="zoneBox"><p>Loading...<Spinner /></p></div>;
           }
           else if(this.state.watering)
           {
@@ -128,18 +128,25 @@ class Zone extends React.Component {
           }
         })()}
 
-        <div className="zoneBox">
-          <select onChange={this.setDuration} className="zoneSelect">
-            <option value="0">0 min</option>
-            <option value="60">1 min</option>
-            <option value="120">2 min</option>
-            <option value="180">3 min</option>
-            <option value="240">4 min</option>
-            <option value="300">5 min</option>
-            <option value="360">6 min</option>
-          </select>
-          <a className="waterbutton" onClick={this.waterZone}>Water</a>
+        <div className="zoneBox zoneBoxRight">
+          <div className="zoneBox">
+            <select onChange={this.setDuration} className="zoneSelect">
+              <option value="0">0 min</option>
+              <option value="60">1 min</option>
+              <option value="120">2 min</option>
+              <option value="180">3 min</option>
+              <option value="240">4 min</option>
+              <option value="300">5 min</option>
+              <option value="360">6 min</option>
+            </select>
+            <a className="waterbutton" onClick={this.waterZone}>Water</a>
+          </div>
+          <div className="zoneMove">
+            <a><i className="fa fa-arrow-up"></i></a>
+            <a><i className="fa fa-arrow-down"></i></a>
+          </div>
         </div>
+
       </li>
     )
   }

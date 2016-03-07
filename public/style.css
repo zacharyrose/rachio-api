@@ -14,6 +14,7 @@ body
 a {
   cursor: pointer;
   color: #03a9f4;
+  transition: all .5s;
 }
 
 a:hover
@@ -102,6 +103,8 @@ a:hover
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
+  padding: 0;
 }
 
 .zone:last-child
@@ -120,6 +123,27 @@ a:hover
 .zoneBox
 {
   align-self: center;
+  margin-left: .25rem;
+  margin-right: .25rem;
+}
+
+.zoneBoxRight
+{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.zoneMove
+{
+  display: flex;
+  flex-direction: column;
+  float: right;
+  margin-right: .25rem;
+}
+
+.zoneMove a
+{
+  font-size: 1.5rem;
 }
 
 .zoneSelect
@@ -147,7 +171,6 @@ input[type="checkbox"] {
   border-radius: 5px;
   background-color: #03a9f4;
   color:white;
-  transition: all .5s;
 }
 
 .waterbutton:hover
