@@ -2,36 +2,81 @@ import React from 'react';
 import apis from '../utils/apis';
 import Spinner from './Spinner';
 
+const nozzlePic = "https://s3-us-west-2.amazonaws.com/rachio-api-icons/nozzle/fixed_spray.png";
+
+const timeToMinutes = time =>
+{
+  var minutes = Math.floor(time / 60);
+  var seconds = time - minutes * 60;
+  return minutes + ":" + (seconds  < 10 ? "0" + seconds : seconds);
+}
+
 class Zone extends React.Component {
   constructor() {
     super();
     this.state = {
+      time: 0,
+      watering: false,
       loading:false
     };
     this.waterZone = this.waterZone.bind(this);
     this.setDuration = this.setDuration.bind(this);
     this.toggle = this.toggle.bind(this);
+
+    this.tick = this.tick.bind(this);
+    this.startWatering = this.startWatering.bind(this);
+    this.stopWatering = this.stopWatering.bind(this);
   }
 
-  componentWillMount() {
+  tick() {
+    this.setState({time: this.state.time + 1});
+    if (this.state.time > this.props.zone.duration) {
+      this.stopWatering();
+    }
+  }
 
+  startWatering() {
+    this.setState({watering:true}, () => {
+      this.interval = setInterval(this.tick, 1000);
+    });
+  }
+
+  stopWatering()
+  {
+    this.setState({watering:false}, () => {
+      clearInterval(this.interval);
+    });
+  }
+
+  componentWillUnmount()
+  {
+    clearInterval(this.interval);
   }
 
   waterZone(e)
   {
     e.preventDefault();
-    this.setState({loading: true});
-    apis.zoneStart(this.props.zone.id, this.props.zone.duration) //duration set in parent by callback
-      .then(
-        res => {
-          this.setState({loading: false});
-          console.log(res);
-        },
-        error => {
-          this.setState({loading: false});
-          console.log(error);
-          alert("Error: "+ error.statusText);
-        })
+
+    if (this.props.zone.duration <=0)
+    {
+      alert("Please set duration");
+    }
+    else {
+      this.setState({loading: true});
+      console.log("Making zoneStart request...", this.props.zone.id, parseInt(this.props.zone.duration));
+      apis.zoneStart(this.props.zone.id, parseInt(this.props.zone.duration)) //duration set in parent by callback
+        .then(
+          res => {
+            this.setState({loading: false});
+            this.startWatering();
+            console.log(res);
+          },
+          error => {
+            this.setState({loading: false});
+            console.log(error);
+            alert("Error: "+ error.statusText);
+          })
+    }
   }
 
   setDuration(e)
@@ -59,6 +104,15 @@ class Zone extends React.Component {
           if(this.state.loading)
           {
             return <div className="zoneBox"><h3>Loading...<Spinner /></h3></div>;
+          }
+          else if(this.state.watering)
+          {
+            return (
+              <div className="zoneBox">
+              <h3><img src={nozzlePic} style={{height:'1.5rem'}}/> {timeToMinutes(this.state.time)}</h3>
+              </div>
+
+            );
           }
         })()}
 
