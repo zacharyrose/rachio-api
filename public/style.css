@@ -13,6 +13,12 @@ body
 
 a {
   cursor: pointer;
+  color: #03a9f4;
+}
+
+a:hover
+{
+  color: lightblue;
 }
 
 .loading

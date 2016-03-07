@@ -121,7 +121,7 @@ class Zone extends React.Component {
               <h3>
                 <img src={nozzlePic} style={nozzleImageStyle}/>
                 {timeToMinutes(this.state.time)}
-                
+                <a onClick={this.stopWatering}><i className="fa fa-times"></i></a>
               </h3>
               </div>
             );
