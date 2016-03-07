@@ -208,7 +208,16 @@ class Zone extends React.Component {
               <option value="25">25 sec</option>
               <option value="30">30 sec</option>
             </select>
-            <a className="waterbutton" onClick={this.waterZone}>Water</a>
+            {(() => {
+              if (this.props.zone.watering || this.props.zone.loading || this.props.zonesCurrentlyWatering() > 0)
+              {
+                return <a></a>;
+              }
+              else
+              {
+                return <a className="waterbutton" onClick={this.waterZone}>Water</a>;
+              }
+            })()}
           </div>
           <div className="zoneMove">
             <a onClick={this.moveUp}><i className="fa fa-arrow-up"></i></a>

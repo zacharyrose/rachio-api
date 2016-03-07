@@ -241,7 +241,7 @@ class Device extends React.Component {
                 {
                   return <h3>Loading...<Spinner /></h3>;
                 }
-                else if(this.state.wateringZones)
+                else if(this.state.wateringZones || this.zonesCurrentlyWatering())
                 {
                   return <h3>Watering...</h3>;
                 }
