@@ -15,7 +15,6 @@ class Device extends React.Component {
     this.initializeZoneList = this.initializeZoneList.bind(this);
     this.setZoneDuration = this.setZoneDuration.bind(this);
     this.toggleZone = this.toggleZone.bind(this);
-    this.deviceToggle = this.deviceToggle.bind(this);
     this.reverseList = this.reverseList.bind(this);
     this.moveZone = this.moveZone.bind(this);
   }
@@ -87,22 +86,6 @@ class Device extends React.Component {
             alert("Error: "+ error.statusText);
           })
       }
-  }
-
-  deviceToggle(e)
-  {
-    e.preventDefault();
-    this.setState({loaded:false}, () => {});
-
-    if (this.props.device.status === "OFFLINE")
-    {
-      apis.deviceOn(this.props.deviceID)
-      .then( () => { this.update(); });
-    }
-    else if (this.props.device.status === "ONLINE") {
-      apis.deviceOff(this.props.deviceID)
-      .then( () => { this.update(); });
-    }
   }
 
   reverseList()
