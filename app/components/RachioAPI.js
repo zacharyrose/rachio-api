@@ -3,6 +3,11 @@ import apis from '../utils/apis';
 import Dashboard from './Dashboard';
 import Loading from './Loading';
 
+/****************************************************************************
+In this component, we simply make the call to person/info and receive the ID,
+which is then passed into the Dashboard
+****************************************************************************/
+
 class RachioAPI extends React.Component {
   constructor() {
     super();
