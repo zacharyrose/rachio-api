@@ -78,21 +78,25 @@ class Device extends React.Component {
       newList[index].watering = false;
       this.setState({zoneList:newList});
 
-      if (this.state.wateringZones)
+      if (this.state.wateringZones && this.state.zoneWatering < this.state.zonesToWater.length)
       {
-        this.setState({zoneWatering: this.state.zoneWatering++}, ()=> {
+        this.setState({zoneWatering: this.state.zoneWatering+1}, ()=> {
           this.waterNextZone()
         });
       }
-
     }
 
   }
 
   waterNextZone()
   {
-    var index = this.getZoneIndex(this.state.zonesToWater[ this.state.zoneWatering ].id);
-    this.waterZone(index, "START" );
+    if (this.state.zoneWatering < this.state.zonesToWater.length)
+    {
+      var nextID = this.state.zonesToWater[ this.state.zoneWatering ].id;
+      var index = this.getZoneIndex(nextID);
+      this.waterZone(index, "START" );
+    }
+
   }
 
   getZoneIndex(id)
