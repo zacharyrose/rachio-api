@@ -34,6 +34,7 @@ const apis = {
   },
   zoneStart: (id, duration) =>
   {
+    duration = parseInt(duration);
     var data = {id, duration};
     return axios.put(apiRoot + "zone/start", data, config);
   },
@@ -41,7 +42,7 @@ const apis = {
   {
     var data = {
       zones : zones.map( (zone, index) => {
-        return { id: zone.id, duration: zone.duration, sortOrder: index }
+        return { id: zone.id, duration: parseInt(zone.duration), sortOrder: index }
       }) };
 
     return axios.put(apiRoot + "zone/start_multiple", data, config);

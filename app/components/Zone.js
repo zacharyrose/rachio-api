@@ -3,6 +3,11 @@ import apis from '../utils/apis';
 import Spinner from './Spinner';
 
 const nozzlePic = "https://s3-us-west-2.amazonaws.com/rachio-api-icons/nozzle/fixed_spray.png";
+const nozzleImageStyle = {
+  height:'1.5rem',
+  position:'relative',
+  top:'.25rem'
+}
 
 const timeToMinutes = time =>
 {
@@ -16,6 +21,7 @@ class Zone extends React.Component {
     super();
     this.state = {
       time: 0,
+      stopping: false,
       watering: false,
       loading:false
     };
@@ -38,6 +44,7 @@ class Zone extends React.Component {
   startWatering() {
     this.setState({watering:true}, () => {
       this.interval = setInterval(this.tick, 1000);
+      this.setState({time: 0});
     });
   }
 
@@ -63,8 +70,8 @@ class Zone extends React.Component {
     }
     else {
       this.setState({loading: true});
-      console.log("Making zoneStart request...", this.props.zone.id, parseInt(this.props.zone.duration));
-      apis.zoneStart(this.props.zone.id, parseInt(this.props.zone.duration)) //duration set in parent by callback
+      console.log("Making zoneStart request...", this.props.zone.id, this.props.zone.duration);
+      apis.zoneStart(this.props.zone.id, this.props.zone.duration) //duration set in parent by callback
         .then(
           res => {
             this.setState({loading: false});
@@ -89,6 +96,8 @@ class Zone extends React.Component {
     this.props.toggleCallback(this.props.zone.id);
   }
 
+
+
   render()
   {
     return (
@@ -109,9 +118,12 @@ class Zone extends React.Component {
           {
             return (
               <div className="zoneBox">
-              <h3><img src={nozzlePic} style={{height:'1.5rem'}}/> {timeToMinutes(this.state.time)}</h3>
+              <h3>
+                <img src={nozzlePic} style={nozzleImageStyle}/>
+                {timeToMinutes(this.state.time)}
+                
+              </h3>
               </div>
-
             );
           }
         })()}
