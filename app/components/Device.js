@@ -44,41 +44,18 @@ class Device extends React.Component {
     this.setState({zoneList});
   }
 
-  setZoneDuration(zoneID, duration)
+  setZoneDuration(index, duration)
   {
-    /*
-    While it would be simpler to pass the zone object
-    and simply change its member variable directly,
-    we must change the state this way, because
-    React states are immutable.
-    */
-    var zoneListNew = this.state.zoneList;
-    for (var i=0; i<zoneListNew.length; i++)
-    {
-      if (zoneListNew[i].id === zoneID)
-        {
-          zoneListNew[i].duration = duration;
-          this.setState({zoneList: zoneListNew}, () =>{console.log ("new duration", this.state.zoneList)});
-          break;
-        }
-    }
-
+    var newList = this.state.zoneList.slice();
+    newList[index].duration = duration;
+    this.setState({zoneList: newList}, () =>{console.log ("new duration", this.state.zoneList)});
   }
 
-  toggleZone(zoneID)
+  toggleZone(index)
   {
-    //Must change state this way to to reasons stated in setZoneDuration()
-    var zoneListNew = this.state.zoneList;
-    for (var i=0; i<zoneListNew.length; i++)
-    {
-      if (zoneListNew[i].id === zoneID)
-        {
-          zoneListNew[i].checked = !zoneListNew[i].checked;
-          this.setState({zoneList: zoneListNew}, () => {console.log ("toggle", this.state.zoneList)} );
-          break;
-        }
-    }
-
+    var newList = this.state.zoneList.slice();
+    newList[index].checked = !newList[index].checked;
+    this.setState({zoneList: newList}, () => {console.log ("toggle", this.state.zoneList)} );
   }
 
   waterZones(e)
@@ -94,7 +71,7 @@ class Device extends React.Component {
 
     if (zonesToWater.length === 0)
     {
-      alert("No Zones Selected!");
+      alert("No Zones Selected.");
     }
     else {
       this.setState({loading: true});

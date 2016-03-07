@@ -91,12 +91,12 @@ class Zone extends React.Component {
 
   setDuration(e)
   {
-    this.props.durationCallback(this.props.zone.id, e.target.value);
+    this.props.durationCallback(this.props.zoneIndex, e.target.value);
   }
 
   toggle(e)
   {
-    this.props.toggleCallback(this.props.zone.id);
+    this.props.toggleCallback(this.props.zoneIndex);
   }
 
   moveUp(e)
