@@ -32,6 +32,7 @@ class Zone extends React.Component {
     this.tick = this.tick.bind(this);
     this.startWatering = this.startWatering.bind(this);
     this.stopWatering = this.stopWatering.bind(this);
+    this.stopWateringAll = this.stopWateringAll.bind(this);
 
     this.moveUp = this.moveUp.bind(this);
     this.moveDown = this.moveDown.bind(this);
@@ -53,8 +54,8 @@ class Zone extends React.Component {
     }
   }
 
+
   startWatering() {
-    this.props.waterCallback(this.props.zoneIndex, "START");
     this.interval = setInterval(this.tick, 1000);
     this.setState({time: 0});
   }
@@ -65,6 +66,22 @@ class Zone extends React.Component {
     this.setState({watering:false}, ()=>{
       this.props.waterCallback(this.props.zoneIndex, "STOP");
     });
+  }
+
+  stopWateringAll()
+  {
+    this.setState({stopping:true});
+    apis.deviceStopWater(this.props.deviceID)
+      .then(
+        res => {
+          this.setState({watering:false}, ()=>{
+            console.log(res);
+            clearInterval(this.interval);
+            this.setState({stopping:false});
+            this.props.waterCallback(this.props.zoneIndex, "STOP_ALL");
+          });
+        }
+      )
   }
 
   componentWillUnmount()
@@ -87,7 +104,7 @@ class Zone extends React.Component {
         .then(
           res => {
             this.setState({loading: false});
-            this.startWatering();
+            this.props.waterCallback(this.props.zoneIndex, "START");
             console.log(res);
           },
           error => {
@@ -141,7 +158,17 @@ class Zone extends React.Component {
               <h3>
                 <img src={nozzlePic} style={nozzleImageStyle}/>
                 {timeToMinutes(this.state.time)}
-                <a onClick={this.stopWatering}><i className="fa fa-times"></i></a>
+
+                {(() => {
+                  if (this.state.stopping)
+                  {
+                    return <Spinner />;
+                  }
+                  else {
+                    return <a onClick={this.stopWateringAll}><i className="fa fa-times"></i></a>
+                  }
+                })()}
+
               </h3>
               </div>
             );
