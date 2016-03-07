@@ -16,6 +16,8 @@ class Device extends React.Component {
     this.setZoneDuration = this.setZoneDuration.bind(this);
     this.toggleZone = this.toggleZone.bind(this);
     this.deviceToggle = this.deviceToggle.bind(this);
+    this.reverseList = this.reverseList.bind(this);
+    this.moveZone = this.moveZone.bind(this);
   }
 
   componentWillMount ()
@@ -126,6 +128,33 @@ class Device extends React.Component {
     }
   }
 
+  reverseList()
+  {
+    var newList = [];
+    this.state.zoneList;
+    for (var i=this.state.zoneList.length-1; i>=0; i--)
+      {
+        newList.push(this.state.zoneList[i]);
+      }
+    console.log ("newList:", newList);
+    this.setState({zoneList:newList}, () => {
+      console.log ("newZoneList:", this.state.zoneList);
+    });
+  }
+
+  moveZone(index, direction)
+  {
+    if (typeof this.state.zoneList[index + direction] != 'undefined')
+    {
+      var newList = this.state.zoneList;
+      var newZone = this.state.zoneList[index + direction];
+      newList[index + direction] = this.state.zoneList[index];
+      newList[index] = newZone;
+
+      this.setState({zoneList:newList});
+    }
+  }
+
   render()
   {
     return (
@@ -138,6 +167,7 @@ class Device extends React.Component {
           <ul className="zoneList">
             <li className="zoneListTitle">
               Zones <br />
+              {/*<small><a onClick={this.reverseList}>Reverse Zone Order</a></small><br />*/}
               <a className="waterbutton" onClick={this.waterZones}>Water Selected Zones</a>
               {(() => {
                 if(this.state.loading)
@@ -147,9 +177,9 @@ class Device extends React.Component {
               })()}
             </li>
             {
-              this.state.zoneList.map( zone => {
+              this.state.zoneList.map( (zone, index) => {
                 return (
-                  <Zone key={zone.id} zone={zone} toggleCallback={this.toggleZone} durationCallback={this.setZoneDuration} />
+                  <Zone key={zone.id} zone={zone} zoneIndex={index} moveCallback={this.moveZone} toggleCallback={this.toggleZone} durationCallback={this.setZoneDuration} />
                 );
               })
             }

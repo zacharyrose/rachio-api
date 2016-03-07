@@ -32,6 +32,9 @@ class Zone extends React.Component {
     this.tick = this.tick.bind(this);
     this.startWatering = this.startWatering.bind(this);
     this.stopWatering = this.stopWatering.bind(this);
+
+    this.moveUp = this.moveUp.bind(this);
+    this.moveDown = this.moveDown.bind(this);
   }
 
   tick() {
@@ -96,7 +99,15 @@ class Zone extends React.Component {
     this.props.toggleCallback(this.props.zone.id);
   }
 
+  moveUp(e)
+  {
+    this.props.moveCallback(this.props.zoneIndex, -1);
+  }
 
+  moveDown(e)
+  {
+    this.props.moveCallback(this.props.zoneIndex, 1);
+  }
 
   render()
   {
@@ -142,8 +153,8 @@ class Zone extends React.Component {
             <a className="waterbutton" onClick={this.waterZone}>Water</a>
           </div>
           <div className="zoneMove">
-            <a><i className="fa fa-arrow-up"></i></a>
-            <a><i className="fa fa-arrow-down"></i></a>
+            <a onClick={this.moveUp}><i className="fa fa-arrow-up"></i></a>
+            <a onClick={this.moveDown}><i className="fa fa-arrow-down"></i></a>
           </div>
         </div>
 
