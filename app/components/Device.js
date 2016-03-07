@@ -255,6 +255,7 @@ class Device extends React.Component {
                         zone={zone}
                         zoneIndex={index}
                         deviceID={this.props.device.id}
+                        parentLoading={this.state.loading}
                         zonesCurrentlyWatering={this.zonesCurrentlyWatering}
                         waterCallback={this.waterZone}
                         loadingCallback={this.setZoneLoading}

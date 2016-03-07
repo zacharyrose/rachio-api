@@ -116,7 +116,7 @@ class Zone extends React.Component {
     {
       alert("Zone already watering");
     }
-    else if (this.props.zonesCurrentlyWatering() > 0) //make sure no other zones are currently watering
+    else if (this.props.parentLoading || this.props.zonesCurrentlyWatering() > 0) //make sure no other zones are currently watering
     {
       alert("Please wait for other zones to finish");
     }
