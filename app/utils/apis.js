@@ -27,7 +27,7 @@ const apis = {
     return axios.put(apiRoot + "device/off/", {id}, config);
   },
   deviceStopWater: id => {
-    return axios.put(apiRoot + "put/public/device/stop_water", {id}, config);
+    return axios.put(apiRoot + "device/stop_water", {id}, config);
   },
   zone: zoneID => {
     return axios.get(apiRoot + "zone/" + zoneID, config);
