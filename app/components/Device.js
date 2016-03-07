@@ -17,6 +17,7 @@ class Device extends React.Component {
     this.toggleZone = this.toggleZone.bind(this);
     this.reverseList = this.reverseList.bind(this);
     this.moveZone = this.moveZone.bind(this);
+    this.waterZone = this.waterZone.bind(this);
   }
 
   componentWillMount ()
@@ -32,6 +33,7 @@ class Device extends React.Component {
         name: zone.name,
         zoneNumber: zone.zoneNumber,
         checked: false,
+        watering:false,
         duration: 60
         })
       }).sort( (a,b) => {
@@ -55,6 +57,13 @@ class Device extends React.Component {
     var newList = this.state.zoneList.slice();
     newList[index].checked = !newList[index].checked;
     this.setState({zoneList: newList}, () => {console.log ("toggle", this.state.zoneList)} );
+  }
+
+  waterZone(index, value)
+  {
+    var newList = this.state.zoneList.slice();
+    newList[index].watering = value;
+    this.setState({zoneList:newList});
   }
 
   waterZones(e)
@@ -138,7 +147,13 @@ class Device extends React.Component {
             {
               this.state.zoneList.map( (zone, index) => {
                 return (
-                  <Zone key={zone.id} zone={zone} zoneIndex={index} moveCallback={this.moveZone} toggleCallback={this.toggleZone} durationCallback={this.setZoneDuration} />
+                  <Zone key={zone.id}
+                        zone={zone}
+                        zoneIndex={index}
+                        waterCallback={this.waterZone}
+                        moveCallback={this.moveZone}
+                        toggleCallback={this.toggleZone}
+                        durationCallback={this.setZoneDuration} />
                 );
               })
             }

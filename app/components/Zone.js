@@ -45,17 +45,15 @@ class Zone extends React.Component {
   }
 
   startWatering() {
-    this.setState({watering:true}, () => {
-      this.interval = setInterval(this.tick, 1000);
-      this.setState({time: 0});
-    });
+    this.props.waterCallback(this.props.zoneIndex, true);
+    this.interval = setInterval(this.tick, 1000);
+    this.setState({time: 0});
   }
 
   stopWatering()
   {
-    this.setState({watering:false}, () => {
-      clearInterval(this.interval);
-    });
+    this.props.waterCallback(this.props.zoneIndex, false);
+    clearInterval(this.interval);
   }
 
   componentWillUnmount()
@@ -125,7 +123,8 @@ class Zone extends React.Component {
           {
             return <div className="zoneBox"><p>Loading...<Spinner /></p></div>;
           }
-          else if(this.state.watering)
+          //else if(this.state.watering)
+          else if(this.props.zone.watering)
           {
             return (
               <div className="zoneBox">
