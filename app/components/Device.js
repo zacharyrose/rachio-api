@@ -66,6 +66,7 @@ class Device extends React.Component {
 
   waterZone(index, action)
   {
+
     var newList = this.state.zoneList.slice();
 
     if (action === "START")
@@ -73,12 +74,12 @@ class Device extends React.Component {
       newList[index].watering = true;
       this.setState({zoneList:newList});
     }
-    else if (action === "STOP")
+    else if (action === "STOP" || action === "STOP_ALL")
     {
       newList[index].watering = false;
       this.setState({zoneList:newList});
 
-      if (this.state.wateringZones && this.state.zoneWatering < this.state.zonesToWater.length)
+      if (this.state.wateringZones && action != "STOP_ALL" && this.state.zoneWatering < this.state.zonesToWater.length)
       {
         this.setState({zoneWatering: this.state.zoneWatering+1}, ()=> {
           this.waterNextZone()
@@ -194,6 +195,7 @@ class Device extends React.Component {
                   <Zone key={zone.id}
                         zone={zone}
                         zoneIndex={index}
+                        deviceID={this.props.device.id}
                         waterCallback={this.waterZone}
                         moveCallback={this.moveZone}
                         toggleCallback={this.toggleZone}
