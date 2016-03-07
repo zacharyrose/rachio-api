@@ -9,6 +9,9 @@ class Device extends React.Component {
     super();
     this.state = {
       zoneList:{},
+      wateringZones:false,
+      zonesToWater:{},
+      zoneWatering:0,
       loading: false
     };
     this.waterZones = this.waterZones.bind(this);
@@ -17,6 +20,9 @@ class Device extends React.Component {
     this.toggleZone = this.toggleZone.bind(this);
     this.reverseList = this.reverseList.bind(this);
     this.moveZone = this.moveZone.bind(this);
+    this.waterZone = this.waterZone.bind(this);
+    this.waterNextZone = this.waterNextZone.bind(this);
+    this.getZoneIndex = this.getZoneIndex.bind(this);
   }
 
   componentWillMount ()
@@ -32,7 +38,8 @@ class Device extends React.Component {
         name: zone.name,
         zoneNumber: zone.zoneNumber,
         checked: false,
-        duration: 60
+        watering:false,
+        duration: 5
         })
       }).sort( (a,b) => {
         return a.zoneNumber - b.zoneNumber;
@@ -57,6 +64,48 @@ class Device extends React.Component {
     this.setState({zoneList: newList}, () => {console.log ("toggle", this.state.zoneList)} );
   }
 
+  waterZone(index, action)
+  {
+    var newList = this.state.zoneList.slice();
+
+    if (action === "START")
+    {
+      newList[index].watering = true;
+      this.setState({zoneList:newList});
+    }
+    else if (action === "STOP")
+    {
+      newList[index].watering = false;
+      this.setState({zoneList:newList});
+
+      if (this.state.wateringZones && this.state.zoneWatering < this.state.zonesToWater.length)
+      {
+        this.setState({zoneWatering: this.state.zoneWatering+1}, ()=> {
+          this.waterNextZone()
+        });
+      }
+    }
+
+  }
+
+  waterNextZone()
+  {
+    if (this.state.zoneWatering < this.state.zonesToWater.length)
+    {
+      var nextID = this.state.zonesToWater[ this.state.zoneWatering ].id;
+      var index = this.getZoneIndex(nextID);
+      this.waterZone(index, "START" );
+    }
+
+  }
+
+  getZoneIndex(id)
+  {
+    return this.state.zoneList.map( zone => {
+      return zone.id;
+    }).indexOf(id);
+  }
+
   waterZones(e)
   {
     e.preventDefault();
@@ -66,26 +115,30 @@ class Device extends React.Component {
         return zone.checked;
     });
 
-    console.log("zonesToWater", zonesToWater);
+    this.setState({zonesToWater, wateringZones:true, zoneWatering:0}, ()=>{
 
-    if (zonesToWater.length === 0)
-    {
-      alert("No Zones Selected.");
-    }
-    else {
-      this.setState({loading: true});
-      apis.zoneStartMultiple(zonesToWater)
-        .then (
-          res => {
-            this.setState({loading: false});
-            console.log(res);
-          },
-          error => {
-            this.setState({loading: false});
-            console.log(error);
-            alert("Error: "+ error.statusText);
-          })
+      console.log("zonesToWater", this.state.zonesToWater);
+
+      if (zonesToWater.length === 0)
+      {
+        alert("No Zones Selected.");
       }
+      else {
+        this.setState({loading: true});
+        apis.zoneStartMultiple(this.state.zonesToWater)
+          .then (
+            res => {
+              this.setState({loading: false});
+              console.log(res);
+              this.waterNextZone();
+            },
+            error => {
+              this.setState({loading: false});
+              console.log(error);
+              alert("Error: "+ error.statusText);
+            })
+        }
+    });
   }
 
   reverseList()
@@ -138,7 +191,13 @@ class Device extends React.Component {
             {
               this.state.zoneList.map( (zone, index) => {
                 return (
-                  <Zone key={zone.id} zone={zone} zoneIndex={index} moveCallback={this.moveZone} toggleCallback={this.toggleZone} durationCallback={this.setZoneDuration} />
+                  <Zone key={zone.id}
+                        zone={zone}
+                        zoneIndex={index}
+                        waterCallback={this.waterZone}
+                        moveCallback={this.moveZone}
+                        toggleCallback={this.toggleZone}
+                        durationCallback={this.setZoneDuration} />
                 );
               })
             }

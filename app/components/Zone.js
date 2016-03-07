@@ -37,6 +37,15 @@ class Zone extends React.Component {
     this.moveDown = this.moveDown.bind(this);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.zone.watering && !this.state.watering)
+    {
+      this.setState({watering:true}, ()=>{
+        this.startWatering();
+      })
+    }
+  }
+
   tick() {
     this.setState({time: this.state.time + 1});
     if (this.state.time > this.props.zone.duration) {
@@ -45,16 +54,16 @@ class Zone extends React.Component {
   }
 
   startWatering() {
-    this.setState({watering:true}, () => {
-      this.interval = setInterval(this.tick, 1000);
-      this.setState({time: 0});
-    });
+    this.props.waterCallback(this.props.zoneIndex, "START");
+    this.interval = setInterval(this.tick, 1000);
+    this.setState({time: 0});
   }
 
   stopWatering()
   {
-    this.setState({watering:false}, () => {
-      clearInterval(this.interval);
+    clearInterval(this.interval);
+    this.setState({watering:false}, ()=>{
+      this.props.waterCallback(this.props.zoneIndex, "STOP");
     });
   }
 
@@ -125,7 +134,7 @@ class Zone extends React.Component {
           {
             return <div className="zoneBox"><p>Loading...<Spinner /></p></div>;
           }
-          else if(this.state.watering)
+          else if(this.props.zone.watering)
           {
             return (
               <div className="zoneBox">
@@ -142,12 +151,12 @@ class Zone extends React.Component {
         <div className="zoneBox zoneBoxRight">
           <div className="zoneBox">
             <select onChange={this.setDuration} className="zoneSelect">
-              <option value="60">1 min</option>
-              <option value="120">2 min</option>
-              <option value="180">3 min</option>
-              <option value="240">4 min</option>
-              <option value="300">5 min</option>
-              <option value="360">6 min</option>
+              <option value="5">5 sec</option>
+              <option value="10">10 sec</option>
+              <option value="15">15 sec</option>
+              <option value="20">20 sec</option>
+              <option value="25">25 sec</option>
+              <option value="30">30 sec</option>
             </select>
             <a className="waterbutton" onClick={this.waterZone}>Water</a>
           </div>
